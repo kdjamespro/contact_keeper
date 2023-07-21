@@ -4,7 +4,7 @@ import 'package:floor/floor.dart';
 @dao
 abstract class ContactDao {
   @Insert()
-  Future<void> insertContact(ContactModel contactModel);
+  Future<void> createContact(ContactModel contactModel);
 
   @delete
   Future<void> deleteContact(ContactModel contactModel);

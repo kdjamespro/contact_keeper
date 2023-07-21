@@ -3,16 +3,29 @@ import 'package:contact_keeper/features/contact_keeper/domain/entities/contact_e
 
 @Entity(tableName: 'contacts', primaryKeys: ['id'])
 class ContactModel extends ContactEntity {
-  const ContactModel({
-    required int id,
+  @override
+  @PrimaryKey(autoGenerate: true)
+  int? id;
+  ContactModel({
+    this.id,
     required String name,
-    String phone = '',
+    required String phone,
     String email = '',
     String address = '',
   }) : super(
           id: id,
+          phone: phone,
           name: name,
           email: email,
           address: address,
         );
+
+  factory ContactModel.fromEntity(ContactEntity entity) {
+    return ContactModel(
+        id: entity.id,
+        name: entity.name,
+        phone: entity.phone,
+        email: entity.email,
+        address: entity.address);
+  }
 }

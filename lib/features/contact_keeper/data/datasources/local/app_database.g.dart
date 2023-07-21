@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `contacts` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `address` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `contacts` (`id` INTEGER, `id` INTEGER, `name` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `address` TEXT NOT NULL, PRIMARY KEY (`id`, `id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -109,6 +109,7 @@ class _$ContactDao extends ContactDao {
             'contacts',
             (ContactModel item) => <String, Object?>{
                   'id': item.id,
+                  'id': item.id,
                   'name': item.name,
                   'phone': item.phone,
                   'email': item.email,
@@ -117,8 +118,9 @@ class _$ContactDao extends ContactDao {
         _contactModelUpdateAdapter = UpdateAdapter(
             database,
             'contacts',
-            ['id'],
+            ['id', 'id'],
             (ContactModel item) => <String, Object?>{
+                  'id': item.id,
                   'id': item.id,
                   'name': item.name,
                   'phone': item.phone,
@@ -128,8 +130,9 @@ class _$ContactDao extends ContactDao {
         _contactModelDeletionAdapter = DeletionAdapter(
             database,
             'contacts',
-            ['id'],
+            ['id', 'id'],
             (ContactModel item) => <String, Object?>{
+                  'id': item.id,
                   'id': item.id,
                   'name': item.name,
                   'phone': item.phone,
@@ -153,7 +156,7 @@ class _$ContactDao extends ContactDao {
   Future<List<ContactModel>> getAllContacts() async {
     return _queryAdapter.queryList('SELECT * FROM contacts',
         mapper: (Map<String, Object?> row) => ContactModel(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             name: row['name'] as String,
             phone: row['phone'] as String,
             email: row['email'] as String,
@@ -161,7 +164,7 @@ class _$ContactDao extends ContactDao {
   }
 
   @override
-  Future<void> insertContact(ContactModel contactModel) async {
+  Future<void> createContact(ContactModel contactModel) async {
     await _contactModelInsertionAdapter.insert(
         contactModel, OnConflictStrategy.abort);
   }
