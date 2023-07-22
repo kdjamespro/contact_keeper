@@ -1,5 +1,5 @@
 # contact_keeper
-A simple and intuitive Contact List application built using Flutter and Dart. The app allows users to manage their contacts, add, edit, and delete contact information.
+A simple and intuitive contact list application built using Flutter and Dart. The app allows users to manage their contacts, add, edit, and delete contact information.
 
 ## Features
 - Add new contacts with name, phone number, email, and address.
