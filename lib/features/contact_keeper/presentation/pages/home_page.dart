@@ -89,6 +89,7 @@ class HomePage extends StatelessWidget {
                           TextFormField(
                             validator: validateEmail,
                             controller: emailController,
+                            keyboardType: TextInputType.emailAddress,
                             decoration: const InputDecoration(
                               labelText: 'Email',
                               icon: Icon(Icons.email),

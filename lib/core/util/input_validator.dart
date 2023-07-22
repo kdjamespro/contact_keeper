@@ -5,6 +5,7 @@ final namePattern =
 
 String? validateName(String? value) {
   String name = value ?? '';
+  name = name.trim();
   if (name.isEmpty) {
     return 'Name is required';
   }
@@ -17,6 +18,8 @@ String? validateName(String? value) {
 
 String? validateEmail(String? value) {
   String email = value ?? '';
+  email = email.trim();
+
   if (email.isEmpty) {
     return null;
   }
@@ -29,6 +32,7 @@ String? validateEmail(String? value) {
 
 String? validatePhone(String? value) {
   String phone = value ?? '';
+  phone = phone.trim();
   if (phone.isEmpty) {
     return "Phone number is required";
   }
