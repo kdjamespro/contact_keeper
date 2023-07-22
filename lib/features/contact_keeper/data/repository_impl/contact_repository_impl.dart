@@ -22,7 +22,7 @@ class ContactRepositoryImpl implements ContactRepository {
   @override
   Future<void> deleteContact(ContactEntity contact) {
     return _appDatabase.contactDao
-        .createContact(ContactModel.fromEntity(contact));
+        .deleteContact(ContactModel.fromEntity(contact));
   }
 
   @override

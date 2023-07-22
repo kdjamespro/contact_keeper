@@ -172,7 +172,7 @@ class _$ContactDao extends ContactDao {
   @override
   Future<void> updateContact(ContactModel contactModel) async {
     await _contactModelUpdateAdapter.update(
-        contactModel, OnConflictStrategy.abort);
+        contactModel, OnConflictStrategy.replace);
   }
 
   @override

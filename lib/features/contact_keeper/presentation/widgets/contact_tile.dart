@@ -1,19 +1,14 @@
+import 'package:contact_keeper/features/contact_keeper/domain/entities/contact_entity.dart';
+import 'package:contact_keeper/features/contact_keeper/presentation/bloc/contact/contact_bloc.dart';
+import 'package:contact_keeper/features/contact_keeper/presentation/bloc/contact/contact_event.dart';
 import 'package:contact_keeper/features/contact_keeper/presentation/pages/editing_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:flutter/material.dart';
 
 class ContactTile extends StatefulWidget {
-  final String name;
-  final String phoneNumber;
-  final String email;
-  final String address;
-
-  const ContactTile(
-      {super.key,
-      required this.name,
-      required this.phoneNumber,
-      required this.email,
-      required this.address});
+  final ContactEntity contact;
+  const ContactTile({super.key, required this.contact});
 
   @override
   State<ContactTile> createState() => _ContactTileState();
@@ -26,13 +21,13 @@ class _ContactTileState extends State<ContactTile> {
       color: Colors.white,
       child: ExpansionTile(
         leading: CircleAvatar(
-            child: RandomAvatar(widget.name + widget.phoneNumber,
+            child: RandomAvatar(widget.contact.name + widget.contact.phone,
                 height: 50, width: 50)),
         title: Text(
-          widget.name,
+          widget.contact.name,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: Text(widget.phoneNumber),
+        subtitle: Text(widget.contact.phone),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 75.0, vertical: 0),
@@ -41,9 +36,13 @@ class _ContactTileState extends State<ContactTile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.email == '' ? 'No email' : widget.email),
+                  Text(widget.contact.email == ''
+                      ? 'No email'
+                      : widget.contact.email),
                   const SizedBox(height: 5),
-                  Text(widget.address == '' ? 'No Address' : widget.address),
+                  Text(widget.contact.address == ''
+                      ? 'No Address'
+                      : widget.contact.address),
                 ],
               ),
             ),
@@ -53,11 +52,25 @@ class _ContactTileState extends State<ContactTile> {
             children: [
               IconButton(
                   onPressed: () => {
-                        Navigator.of(context).push(
+                        Navigator.of(context)
+                            .push(
                           MaterialPageRoute(
-                            builder: (context) => const EditingPage(),
+                            builder: (context) => EditingPage(
+                              contact: widget.contact,
+                            ),
                           ),
                         )
+                            .then((value) {
+                          bool show = value ?? false;
+                          if (show) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text('Contact updated successfully'),
+                              ),
+                            );
+                          }
+                        })
                       },
                   icon: const Icon(Icons.edit)),
               IconButton(
@@ -82,6 +95,7 @@ class _ContactTileState extends State<ContactTile> {
                               ElevatedButton(
                                   child: const Text("Yes"),
                                   onPressed: () {
+                                    _deleteContact(context, widget.contact);
                                     Navigator.pop(context);
                                   })
                             ],
@@ -95,31 +109,14 @@ class _ContactTileState extends State<ContactTile> {
       ),
     );
   }
-}
 
-// ListTile(
-//         selected: isSelected,
-//         leading: CircleAvatar(
-//             child: RandomAvatar(widget.name + widget.phoneNumber,
-//                 height: 50, width: 50)),
-//         title: Text(
-//           widget.name,
-//           overflow: TextOverflow.ellipsis,
-//         ),
-//         subtitle: Text(widget.phoneNumber),
-//         onTap: () => {
-//           Navigator.of(context).push(
-//             MaterialPageRoute(
-//               builder: (_) => EditingPage(
-//                 name: widget.name,
-//                 phoneNumber: widget.phoneNumber,
-//               ),
-//             ),
-//           )
-//         },
-//         onLongPress: () => {
-//           setState(() {
-//             isSelected = !isSelected;
-//           })
-//         },
-//       ),
+  void _deleteContact(BuildContext context, ContactEntity contact) {
+    BlocProvider.of<ContactBloc>(context).add(DeleteContact(contact));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: Colors.red,
+        content: Text('Contact deleted successfully'),
+      ),
+    );
+  }
+}

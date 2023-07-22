@@ -29,7 +29,6 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
 
   void onCreateContact(
       CreateContact createContact, Emitter<ContactState> emit) async {
-    print(createContact.contact);
     await _createContactUseCase(params: createContact.contact);
     final contacts = await _getAllContactsUseCase();
     emit(ContactReady(contacts));

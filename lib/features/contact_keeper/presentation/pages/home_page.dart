@@ -6,6 +6,7 @@ import 'package:contact_keeper/features/contact_keeper/presentation/widgets/appl
 import 'package:contact_keeper/features/contact_keeper/presentation/widgets/contact_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:contact_keeper/core/util/input_validator.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -23,8 +24,6 @@ class HomePage extends StatelessWidget {
           }
           if (state is ContactReady) {
             List<ContactEntity> contacts = state.contacts!;
-            print(contacts[0]);
-            print(contacts[0].id);
             if (contacts.isEmpty) {
               return const Center(
                 child: Padding(
@@ -38,10 +37,8 @@ class HomePage extends StatelessWidget {
               itemBuilder: (context, index) {
                 ContactEntity contact = contacts[index];
                 return ContactTile(
-                    name: contact.name,
-                    phoneNumber: contact.phone,
-                    email: contact.email,
-                    address: contact.address);
+                  contact: contact,
+                );
               },
               itemCount: contacts.length,
             );
@@ -61,6 +58,7 @@ class HomePage extends StatelessWidget {
                 TextEditingController emailController = TextEditingController();
                 TextEditingController addressController =
                     TextEditingController();
+                final formKey = GlobalKey<FormState>();
                 return AlertDialog(
                   insetPadding: const EdgeInsets.all(10),
                   scrollable: true,
@@ -68,9 +66,11 @@ class HomePage extends StatelessWidget {
                   content: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Form(
+                      key: formKey,
                       child: Column(
                         children: <Widget>[
                           TextFormField(
+                            validator: validateName,
                             controller: nameController,
                             decoration: const InputDecoration(
                               labelText: 'Name',
@@ -79,6 +79,7 @@ class HomePage extends StatelessWidget {
                           ),
                           TextFormField(
                             controller: phoneNumberController,
+                            validator: validatePhone,
                             keyboardType: TextInputType.phone,
                             decoration: const InputDecoration(
                               labelText: 'Phone Number',
@@ -86,6 +87,7 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           TextFormField(
+                            validator: validateEmail,
                             controller: emailController,
                             decoration: const InputDecoration(
                               labelText: 'Email',
@@ -112,13 +114,15 @@ class HomePage extends StatelessWidget {
                     ElevatedButton(
                         child: const Text("Submit"),
                         onPressed: () {
-                          _addContacts(
-                              context,
-                              nameController.text,
-                              phoneNumberController.text,
-                              emailController.text,
-                              addressController.text);
-                          Navigator.pop(context);
+                          if (formKey.currentState!.validate()) {
+                            _addContacts(
+                                context,
+                                nameController.text,
+                                phoneNumberController.text,
+                                emailController.text,
+                                addressController.text);
+                            Navigator.pop(context);
+                          }
                         })
                   ],
                 );
@@ -130,14 +134,20 @@ class HomePage extends StatelessWidget {
 
   void _addContacts(BuildContext context, String name, String phoneNumber,
       String email, String address) {
-    print(phoneNumber);
     BlocProvider.of<ContactBloc>(context).add(CreateContact(ContactEntity(
-        name: name, phone: phoneNumber, email: email, address: address)));
+        name: trimString(name),
+        phone: trimString(phoneNumber),
+        email: trimString(email),
+        address: trimString(address))));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        backgroundColor: Colors.blue,
-        content: Text('Article saved successfully.'),
+        backgroundColor: Colors.green,
+        content: Text('Contact saved successfully'),
       ),
     );
+  }
+
+  String trimString(String input) {
+    return input.trim();
   }
 }

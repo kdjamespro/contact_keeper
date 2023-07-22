@@ -2,7 +2,6 @@ import 'package:contact_keeper/features/contact_keeper/presentation/bloc/contact
 import 'package:contact_keeper/features/contact_keeper/presentation/bloc/contact/contact_event.dart';
 import 'package:contact_keeper/features/contact_keeper/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:contact_keeper/features/injection_container.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'injection_container.dart';
 
