@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `contacts` (`id` INTEGER, `id` INTEGER, `name` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `address` TEXT NOT NULL, PRIMARY KEY (`id`, `id`))');
+            'CREATE TABLE IF NOT EXISTS `contacts` (`id` INTEGER, `name` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `address` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -109,7 +109,6 @@ class _$ContactDao extends ContactDao {
             'contacts',
             (ContactModel item) => <String, Object?>{
                   'id': item.id,
-                  'id': item.id,
                   'name': item.name,
                   'phone': item.phone,
                   'email': item.email,
@@ -118,9 +117,8 @@ class _$ContactDao extends ContactDao {
         _contactModelUpdateAdapter = UpdateAdapter(
             database,
             'contacts',
-            ['id', 'id'],
+            ['id'],
             (ContactModel item) => <String, Object?>{
-                  'id': item.id,
                   'id': item.id,
                   'name': item.name,
                   'phone': item.phone,
@@ -130,9 +128,8 @@ class _$ContactDao extends ContactDao {
         _contactModelDeletionAdapter = DeletionAdapter(
             database,
             'contacts',
-            ['id', 'id'],
+            ['id'],
             (ContactModel item) => <String, Object?>{
-                  'id': item.id,
                   'id': item.id,
                   'name': item.name,
                   'phone': item.phone,
@@ -172,7 +169,7 @@ class _$ContactDao extends ContactDao {
   @override
   Future<void> updateContact(ContactModel contactModel) async {
     await _contactModelUpdateAdapter.update(
-        contactModel, OnConflictStrategy.replace);
+        contactModel, OnConflictStrategy.abort);
   }
 
   @override

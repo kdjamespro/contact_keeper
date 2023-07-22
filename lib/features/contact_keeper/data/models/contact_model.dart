@@ -3,11 +3,8 @@ import 'package:contact_keeper/features/contact_keeper/domain/entities/contact_e
 
 @Entity(tableName: 'contacts', primaryKeys: ['id'])
 class ContactModel extends ContactEntity {
-  @override
-  @PrimaryKey(autoGenerate: true)
-  final int? id;
   const ContactModel({
-    this.id,
+    required int? id,
     required String name,
     required String phone,
     String email = '',
